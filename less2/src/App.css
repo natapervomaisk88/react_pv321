@@ -40,3 +40,11 @@
 .read-the-docs {
   color: #888;
 }
+
+.cards
+{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+

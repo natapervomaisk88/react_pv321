@@ -1,22 +1,22 @@
 
-
+import "./Card.css";
 const Card = ({ isHeartFilled, filledHeart, emptyHeart, photo, action, name, exprice, price }) => {
     return (
         <div className="card">
             <img 
+             class = "photo-heart"
                 src={isHeartFilled ? filledHeart : emptyHeart} 
                 alt="Heart Icon" 
                 onClick={action} 
-                style={{ cursor: 'pointer', width: '50px', height: '50px' }}
             />
             <img 
+            className = "photo-product"
                 src={photo} 
                 alt={name} 
-                style={{ width: '100px', height: '100px' }} 
             />
-            <p>{name}</p>
-            <p style={{ textDecoration: 'line-through' }}>{exprice}</p>
-            <p>{price}</p>
+            <p className = "name">{name}</p>
+            <p className = "exprice" style={{ textDecoration: 'line-through' }}>{exprice}</p>
+            <p className = "price">{price}</p>
         </div>
     );
 };
