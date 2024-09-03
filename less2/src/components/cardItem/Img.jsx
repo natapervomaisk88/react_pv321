@@ -7,8 +7,8 @@ const Img = ({ imgSrc, altName }) => {
 };
 
 const imgStyles = {
-	width: "100%",
-    height: "200px"
+	width: "150px",
+    height: "150px"
 };
 
 export default Img;
