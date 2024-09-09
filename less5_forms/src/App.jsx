@@ -36,10 +36,9 @@ function App() {
             })}
             autoComplete="off"
           />
-          {errors.login ? (
-            <span className="error">{errors.login.message}</span>
-          ) : (
-            <span className="success">success</span>
+          {errors.login && <p className="error">{errors.login.message}</p>}
+          {!errors.login && getFieldState("login").isTouched && (
+            <p className="success">Success</p>
           )}
         </div>
         <div className="mb-3">
