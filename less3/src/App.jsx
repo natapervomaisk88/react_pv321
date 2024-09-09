@@ -61,40 +61,30 @@ function App() {
 
 
 
-	// const [todos, setTodos] = useState([{id: 1, title: "todo1"}]);
-	// const ref_todo = useRef();
-	// const handleAddTodo = () => {
-	// 	const new_id = todos.length +1;
-	// 	setTodos([...todos, {id:new_id, title:ref_todo.current.value}]); // spread js
-	// }
-	// return (
-	// 	<>
-	// 		<input type="text" ref={ ref_todo}/>
-	// 		<div>
-	// 			<button onClick={handleAddTodo}> Add todo</button>
-	// 		</div>
-	// 		{todos.map((el) =>
-	// 			(<p key={el.id}>{el.id} : {el.title} </p>))}
-	// 	</>
-	// );
+	const [todos, setTodos] = useState([{ id: 1, title: "todo1" }]);
+	const ref_todo = useRef();
+	const handleAddTodo = (e) => {
+		e.preventDefault(); //отмена дефолтного поведения формы
+		const new_id = todos.length + 1;
+		setTodos([...todos, { id: new_id, title: ref_todo.current.value }]); // spread js
+	}
 
-	const [color, setColor] = useState("");
-	const ref_color = useRef();
-	const handleColor = () => {
-		setColor(ref_color.current.value);
-	};
+
+
 	return (
-	<>
-		<div style={{ width: "300px", height: "100px", backgroundColor: color, border: "1px solid black" }}></div>
+		<>
+			<form onSubmit={handleAddTodo} >
 
-		<input
-			type="color"
-			ref={ref_color}
-			onChange={handleColor}
-		/>
-
-	</>);
-
+				<input type="text" ref={ref_todo} name="title"/>
+				<div>
+					<button> Add todo</button>
+				</div>
+			</form>
+			<hr />
+			{todos.map((el) =>
+				(<p key={el.id}>{el.id} : {el.title} </p>))}
+		</>
+	);
 };
 
 export default App;
