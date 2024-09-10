@@ -1,0 +1,32 @@
+{
+  "users": [
+    {
+      "id": "1",
+      "name": "John"
+    },
+    {
+      "id": "2",
+      "name": "Alice"
+    },
+    {
+      "id": "3",
+      "name": "David"
+    },
+    {
+      "id": "d47a",
+      "name": "Simon"
+    }
+  ],
+  "products": [
+    {
+      "id": "1",
+      "title": "laptop",
+      "price": 25000
+    },
+    {
+      "id": "2",
+      "title": "ps",
+      "price": 15000
+    }
+  ]
+}
