@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 
-function ProductCard({ image, title, price }) {
-  const [quantity, setQuantity] = useState(0);  
-  const [totalPrice, setTotalPrice] = useState(0);  
+function ProductCard({ image, title, price, initialStock }) { 
+  const [quantity, setQuantity] = useState(0);
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [stock, setStock] = useState(initialStock > 0 ? initialStock : 1); 
 
   const handleIncrease = () => {
-    const newQuantity = quantity + 1;  
-    setQuantity(newQuantity);
-    setTotalPrice(newQuantity * price);  
+    if (quantity < stock) { 
+      const newQuantity = quantity + 1;
+      setQuantity(newQuantity);
+      setTotalPrice(newQuantity * price);
+    }
   };
 
   const handleDecrease = () => {
     if (quantity > 0) {
-      const newQuantity = quantity - 1;  
+      const newQuantity = quantity - 1;
       setQuantity(newQuantity);
-      setTotalPrice(newQuantity * price); 
+      setTotalPrice(newQuantity * price);
     }
   };
 
@@ -25,15 +28,17 @@ function ProductCard({ image, title, price }) {
       overflow: "hidden",
       width: "200px",
       margin: "16px",
-      backgroundColor: "#fff",
+      backgroundColor: stock > 0 ? "#fff" : "#f8d7da",
       transition: "box-shadow 0.3s ease",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
+      opacity: stock > 0 ? 1 : 0.6,
     },
     imageContainer: {
       width: "100%",
       padding: "8px",
+      filter: stock > 0 ? "none" : "grayscale(100%)",
     },
     image: {
       maxWidth: "100%",
@@ -49,13 +54,13 @@ function ProductCard({ image, title, price }) {
     title: {
       fontSize: "16px",
       margin: "8px 0",
-      color: "#333",
+      color: stock > 0 ? "#333" : "#721c24",
       fontWeight: "normal",
     },
     price: {
       fontSize: "18px",
       fontWeight: "bold",
-      color: "#d32f2f",
+      color: stock > 0 ? "#d32f2f" : "#721c24",
       marginBottom: "12px",
     },
     quantity: {
@@ -75,11 +80,16 @@ function ProductCard({ image, title, price }) {
       transition: "background-color 0.3s ease",
       margin: "0 5px",
     },
-    totalPrice: { 
-      color: "#333",  
+    totalPrice: {
+      color: "#333",
       fontSize: "16px",
       fontWeight: "bold",
-    }
+    },
+    stockStatus: {
+      fontSize: "14px",
+      color: stock > 0 ? "#28a745" : "#dc3545",
+      marginBottom: "8px",
+    },
   };
 
   return (
@@ -90,10 +100,17 @@ function ProductCard({ image, title, price }) {
       <div style={styles.info}>
         <h3 style={styles.title}>{title}</h3>
         <span style={styles.price}>{price} ₴</span>
+        <p style={styles.stockStatus}>
+          {stock > 0 ? `На складі: ${stock}` : "Немає в наявності"}
+        </p>
         <div style={styles.quantity}>
-          <button style={styles.button} onClick={handleDecrease}>-</button>
+          <button style={styles.button} onClick={handleDecrease} disabled={quantity === 0}>
+            -
+          </button>
           <span>{quantity}</span>
-          <button style={styles.button} onClick={handleIncrease}>+</button>
+          <button style={styles.button} onClick={handleIncrease} disabled={stock === 0}>
+            +
+          </button>
         </div>
         <p style={styles.totalPrice}>Загальна вартість: {totalPrice} ₴</p>
       </div>
