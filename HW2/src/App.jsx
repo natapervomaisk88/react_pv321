@@ -8,21 +8,30 @@ function App() {
       image: "https://content1.rozetka.com.ua/goods/images/big/24709323.jpg",
       title: "Миша Logitech G102 Lightsync USB Black (910-005823)",
       price: 1300,
+      inStock:10,
+      isNew:true,
+      discount:4,
     },
     {
       image: "https://content1.rozetka.com.ua/goods/images/big/285504284.jpg",
       title: "SSD диск Kingston NV2 1TB M.2 2280 NVMe PCIe 4.0 x4 (SNV2S/1000G)",
       price: 3059,
+      inStock:0,
+
     },
     {
       image: "https://content.rozetka.com.ua/goods/images/big/256155567.jpg",
       title: "Корпус RZTK PcCooler Master RP200 Mesh RGB 3F",
       price: 1999,
+      inStock:5,
+      discount:5,
     },
     {
       image: "https://content.rozetka.com.ua/goods/images/big/327503063.jpg",
       title: "Процесор AMD Ryzen 7 7800X3D 4.2GHz/96MB (100-100000910WOF) sAM5 BOX",
       price: 17999,
+      inStock:10,
+      discount:15,
     },
   ];
 
@@ -34,6 +43,9 @@ function App() {
           image={product.image}
           title={product.title}
           price={product.price}
+          inStock={product.inStock}
+          isNew={product.isNew}
+          discount={product.discount}
         />
       ))}
     </div>

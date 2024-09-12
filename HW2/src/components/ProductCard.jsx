@@ -1,12 +1,11 @@
 import React, { useState } from "react";
 
-function ProductCard({ image, title, price, initialStock }) { 
+function ProductCard({ image, title, price, inStock,isNew,discount }) {
   const [quantity, setQuantity] = useState(0);
   const [totalPrice, setTotalPrice] = useState(0);
-  const [stock, setStock] = useState(initialStock > 0 ? initialStock : 1); 
 
   const handleIncrease = () => {
-    if (quantity < stock) { 
+    if (quantity < inStock) {
       const newQuantity = quantity + 1;
       setQuantity(newQuantity);
       setTotalPrice(newQuantity * price);
@@ -23,22 +22,45 @@ function ProductCard({ image, title, price, initialStock }) {
 
   const styles = {
     card: {
+      position:"relative",
       border: "1px solid #e0e0e0",
       borderRadius: "8px",
       overflow: "hidden",
-      width: "200px",
+      width: "250px",
       margin: "16px",
-      backgroundColor: stock > 0 ? "#fff" : "#f8d7da",
+      backgroundColor: inStock > 0 ? "#fff" : "#f0f0f0", 
       transition: "box-shadow 0.3s ease",
       display: "flex",
       flexDirection: "column",
       alignItems: "center",
-      opacity: stock > 0 ? 1 : 0.6,
+      opacity: inStock > 0 ? 1 : 0.6, 
+    },
+    badge:{
+       position:"absolute",
+       top:"10px",
+       left:"10px",
+       backgroundColor:"#ff5722",
+       color:"#fff",
+       padding:"4px 8px",
+       borderRadius:"4px",
+       fontSize:"12px",
+       fontWeight:"bold",
+    },
+    discountBadge:{
+        position:"absolute",
+        top:"10px",
+        right:"10px",
+        backgroundColor:"#dc3545",
+        color:"#fff",
+        padding:"4px 8px",
+        borderRadius:"4px",
+        fontSize:"12px",
+        fontWeight:"bold",
     },
     imageContainer: {
       width: "100%",
       padding: "8px",
-      filter: stock > 0 ? "none" : "grayscale(100%)",
+      filter: inStock > 0 ? "none" : "grayscale(100%)", 
     },
     image: {
       maxWidth: "100%",
@@ -54,13 +76,13 @@ function ProductCard({ image, title, price, initialStock }) {
     title: {
       fontSize: "16px",
       margin: "8px 0",
-      color: stock > 0 ? "#333" : "#721c24",
+      color: inStock > 0 ? "#333" : "#888", 
       fontWeight: "normal",
     },
     price: {
       fontSize: "18px",
       fontWeight: "bold",
-      color: stock > 0 ? "#d32f2f" : "#721c24",
+      color: inStock > 0 ? "#d32f2f" : "#888", 
       marginBottom: "12px",
     },
     quantity: {
@@ -79,6 +101,8 @@ function ProductCard({ image, title, price, initialStock }) {
       fontSize: "14px",
       transition: "background-color 0.3s ease",
       margin: "0 5px",
+      opacity: inStock > 0 ? 1 : 0.5, 
+      pointerEvents: inStock > 0 ? "auto" : "none", 
     },
     totalPrice: {
       color: "#333",
@@ -87,13 +111,15 @@ function ProductCard({ image, title, price, initialStock }) {
     },
     stockStatus: {
       fontSize: "14px",
-      color: stock > 0 ? "#28a745" : "#dc3545",
+      color: inStock > 0 ? "#28a745" : "#dc3545",
       marginBottom: "8px",
     },
   };
 
   return (
     <div className="product-card" style={styles.card}>
+      {isNew && <div style={styles.badge}>Новинка</div>}
+      {discount > 0 &&<div style={styles.discountBadge}>-{discount}%</div>}
       <div style={styles.imageContainer}>
         <img src={image} alt={title} style={styles.image} />
       </div>
@@ -101,14 +127,14 @@ function ProductCard({ image, title, price, initialStock }) {
         <h3 style={styles.title}>{title}</h3>
         <span style={styles.price}>{price} ₴</span>
         <p style={styles.stockStatus}>
-          {stock > 0 ? `На складі: ${stock}` : "Немає в наявності"}
+          {inStock > 0 ? `На складі: ${inStock}` : "Немає в наявності"}
         </p>
         <div style={styles.quantity}>
           <button style={styles.button} onClick={handleDecrease} disabled={quantity === 0}>
             -
           </button>
           <span>{quantity}</span>
-          <button style={styles.button} onClick={handleIncrease} disabled={stock === 0}>
+          <button style={styles.button} onClick={handleIncrease} disabled={inStock === 0}>
             +
           </button>
         </div>
