@@ -1,13 +1,9 @@
 import { FC, useEffect } from "react";
-
-type CounterType = {
-  value: number;
-};
+import { CounterType } from "../reducers/counter-reducer";
 
 const Counter: FC<CounterType> = ({ value }: CounterType) => {
   useEffect(() => {
-    fetch("")
-    .then
+    fetch("").then;
     return () => {
       console.log("unmounting Counter Component");
     };
