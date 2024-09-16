@@ -1,5 +1,5 @@
 import { useState, FC } from "react";
-
+import './CartModal.css';
 interface ProductCardProps {
   image: string;
   title: string;
@@ -7,6 +7,7 @@ interface ProductCardProps {
   inStock: number;
   isNew: boolean;
   discount: number;
+  onAddToCart:(productTitle:string,quantity:number,totalPrice:number) =>void;
 }
 
 const ProductCard: FC<ProductCardProps> = ({
@@ -16,6 +17,7 @@ const ProductCard: FC<ProductCardProps> = ({
   inStock,
   isNew,
   discount,
+  onAddToCart,
 }) => {
   const [quantity, setQuantity] = useState<number>(0);
   const [totalPrice, setTotalPrice] = useState<number>(0);
@@ -34,6 +36,12 @@ const ProductCard: FC<ProductCardProps> = ({
       setQuantity(newQuantity);
       setTotalPrice(newQuantity * price);
     }
+  };
+
+  const handleAddToCart = () =>{
+     if(quantity > 0){
+      onAddToCart(title,quantity,totalPrice);
+     }
   };
 
   const styles = {
@@ -120,6 +128,19 @@ const ProductCard: FC<ProductCardProps> = ({
       opacity: inStock > 0 ? 1 : 0.5,
       pointerEvents: inStock > 0 ? "auto" as "auto" : "none" as "none",
     },
+    addToCartButton: {
+      backgroundColor: "#28a745",
+      color: "#fff",
+      padding: "10px 20px",
+      border: "none",
+      borderRadius: "4px",
+      cursor: "pointer",
+      fontSize: "14px",
+      transition: "background-color 0.3s ease",
+      marginTop: "12px",
+      pointerEvents: quantity > 0 ? "auto" as "auto" : "none" as "none",
+      opacity: quantity > 0 ? 1 : 0.5,
+    },
     totalPrice: {
       color: "#333",
       fontSize: "16px",
@@ -163,9 +184,13 @@ const ProductCard: FC<ProductCardProps> = ({
           </button>
         </div>
         <p style={styles.totalPrice}>Загальна вартість: {totalPrice} ₴</p>
+        <button style={styles.addToCartButton} onClick={handleAddToCart}>
+          Додати в кошик
+        </button>
       </div>
     </div>
   );
 };
+
 
 export default ProductCard;

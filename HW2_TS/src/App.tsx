@@ -1,5 +1,7 @@
 import { useState, useEffect, FC } from "react";
 import ProductCard from "./components/ProductCard";
+import CartModal from "./components/CartModal"; 
+import "./components/CartModal.css";
 import "./App.css";
 
 interface Product {
@@ -12,8 +14,27 @@ interface Product {
   discount?: number;
 }
 
+interface CartItem {
+  title: string;
+  quantity: number;
+  totalPrice: number;
+}
+
 const App: FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
+  const [cart, setCart] = useState<CartItem[]>([]);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+
+  const handleAddToCart = (title: string, quantity: number, totalPrice: number) => {
+    const newItem = { title, quantity, totalPrice };
+    setCart((prevCart) => [...prevCart, newItem]);
+    console.log(`Товар "${title}" добавлен в корзину. Количество: ${quantity}. Общая цена: ${totalPrice} ₴`);
+    setIsCartOpen(true); 
+  };
+
+  const handleCloseCart = () => {
+    setIsCartOpen(false);
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -40,8 +61,10 @@ const App: FC = () => {
           inStock={product.inStock}
           isNew={product.isNew ?? false}
           discount={product.discount ?? 0}
+          onAddToCart={handleAddToCart}
         />
       ))}
+      {isCartOpen && <CartModal cartItems={cart} onClose={handleCloseCart} />}
     </div>
   );
 };
