@@ -38,6 +38,14 @@
       "price": 25999,
       "inStock": 9,
       "image": "https://content2.rozetka.com.ua/goods/images/big/391885922.jpg"
+    },
+    {
+      "id": 1726854561685,
+      "title": "Samsung S23",
+      "price": 243343,
+      "image": "https://content.rozetka.com.ua/goods/images/big/310608217.jpg",
+      "inStock": 13,
+      "isNew": true
     }
   ]
 }

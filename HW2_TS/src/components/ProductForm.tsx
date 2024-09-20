@@ -1,103 +1,105 @@
-import { useState, FC } from "react";
-import "./ProductForm.css";
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import './ProductForm.css';
 
-interface ProductFormProps {
-  onClose: () => void;
-  onProductCreated: () => void;
+interface Product {
+  id: number;
+  title: string;
+  price: number;
+  image: string;
+  inStock: number;
+  isNew: boolean;
 }
 
-const ProductForm: FC<ProductFormProps> = ({ onClose, onProductCreated }) => {
-    const [title, setTitle] = useState<string>('');
-    const [price, setPrice] = useState<number>(0);
-    const [inStock, setInStock] = useState<number>(0);
-    const [image, setImage] = useState<string>('');
-    const [discount, setDiscount] = useState<number>(0);
+interface ProductFormProps {
+  onProductCreated: (newProduct: Product) => void;
+  onClose: () => void;
+}
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+const ProductForm: React.FC<ProductFormProps> = ({ onProductCreated, onClose }) => {
+  const [title, setTitle] = useState('');
+  const [price, setPrice] = useState(0);
+  const [image, setImage] = useState('');
+  const [inStock, setInStock] = useState(0);
 
-    const newProduct = {
-        title,
-        price,
-        inStock,
-        image,
-        discount,
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const newProduct: Product = {
+      id: Date.now(),
+      title,
+      price,
+      image,
+      inStock,
+      isNew: true,
     };
 
     try {
-      const response = await fetch("http://localhost:3000/products", {
+      await fetch("http://localhost:3000/products", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(newProduct)
+        body: JSON.stringify(newProduct),
       });
 
-      if (response.ok) {
-        onProductCreated();
-      }
+      onProductCreated(newProduct);
     } catch (error) {
-      console.error("Ошибка добавления продукта:", error);
+      console.error("Ошибка при добавлении продукта:", error);
     }
-    onClose();
   };
 
-  return (
+  const modalContent = (
     <div className="modal">
       <div className="modal-content">
-        <button className="close-button" onClick={onClose}>×</button>
-        <h2>Добавить новый товар</h2>
+        <button className="close-button" onClick={onClose}>
+          &times;
+        </button>
+        <h2>Добавить продукт</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Название:</label>
+            <label htmlFor="title">Название</label>
             <input
               type="text"
+              id="title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              required
             />
           </div>
           <div className="form-group">
-            <label>Цена:</label>
+            <label htmlFor="price">Цена</label>
             <input
               type="number"
+              id="price"
               value={price}
               onChange={(e) => setPrice(Number(e.target.value))}
-              required
             />
           </div>
           <div className="form-group">
-            <label>Количество на складе:</label>
-            <input
-              type="number"
-              value={inStock}
-              onChange={(e) => setInStock(Number(e.target.value))}
-              required
-            />
-          </div>
-          <div className="form-group">
-            <label>Изображение (URL):</label>
+            <label htmlFor="image">URL изображения</label>
             <input
               type="text"
+              id="image"
               value={image}
               onChange={(e) => setImage(e.target.value)}
-              required
             />
           </div>
           <div className="form-group">
-            <label>Скидка (%):</label>
+            <label htmlFor="inStock">Количество на складе</label>
             <input
               type="number"
-              value={discount}
-              onChange={(e) => setDiscount(Number(e.target.value))}
-              required
+              id="inStock"
+              value={inStock}
+              onChange={(e) => setInStock(Number(e.target.value))}
             />
           </div>
-          <button type="submit" className="submit-button">Добавить товар</button>
+          <button type="submit" className="submit-button">Добавить продукт</button>
         </form>
       </div>
     </div>
   );
+
+  return ReactDOM.createPortal(modalContent, document.getElementById('portal') as HTMLElement);
 };
 
 export default ProductForm;

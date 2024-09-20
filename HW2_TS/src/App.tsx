@@ -1,9 +1,10 @@
-import { useState, useEffect, FC } from "react";
+import { useReducer, useEffect, FC, useState } from "react";
 import ProductCard from "./components/ProductCard";
 import CartModal from "./components/CartModal";
-import ProductForm from "./components/ProductForm"; 
+import ProductForm from "./components/ProductForm";
 import "./components/CartModal.css";
 import "./App.css";
+import './components/ProductForm.css';
 
 interface Product {
   id: number;
@@ -21,18 +22,40 @@ interface CartItem {
   totalPrice: number;
 }
 
+type Action =
+  | { type: 'SET_PRODUCTS'; payload: Product[] }
+  | { type: 'ADD_PRODUCT'; payload: Product }
+  | { type: 'REMOVE_PRODUCT'; payload: number }
+  | { type: 'UPDATE_PRODUCT'; payload: Product };
+
+const productReducer = (state: Product[], action: Action): Product[] => {
+  switch (action.type) {
+    case 'SET_PRODUCTS':
+      return action.payload;
+    case 'ADD_PRODUCT':
+      return [...state, action.payload];
+    case 'REMOVE_PRODUCT':
+      return state.filter(product => product.id !== action.payload);
+    case 'UPDATE_PRODUCT':
+      return state.map(product =>
+        product.id === action.payload.id ? action.payload : product
+      );
+    default:
+      return state;
+  }
+};
+
 const App: FC = () => {
-  const [products, setProducts] = useState<Product[]>([]);
+  const [products, dispatch] = useReducer(productReducer, []);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const [isFormOpen, setIsFormOpen] = useState(false); 
-  const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  
   const fetchProducts = async () => {
     try {
       const response = await fetch("http://localhost:3000/products");
       const data = await response.json();
-      setProducts(data);
+      dispatch({ type: 'SET_PRODUCTS', payload: data }); 
     } catch (error) {
       console.error("Ошибка загрузки данных:", error);
     }
@@ -42,7 +65,7 @@ const App: FC = () => {
     const newItem = { title, quantity, totalPrice };
     setCart((prevCart) => [...prevCart, newItem]);
     console.log(`Товар "${title}" добавлен в корзину. Количество: ${quantity}. Общая цена: ${totalPrice} ₴`);
-    setIsCartOpen(true); 
+    setIsCartOpen(true);
   };
 
   const handleCloseCart = () => {
@@ -50,20 +73,17 @@ const App: FC = () => {
   };
 
   const handleOpenForm = () => {
-    setIsFormOpen(true); 
+    setIsFormOpen(true);
   };
 
   const handleCloseForm = () => {
-    setIsFormOpen(false); 
+    setIsFormOpen(false);
   };
 
-  const handleClose = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleProductCreated = () => {
+  const handleProductCreated = (newProduct: Product) => {
+    dispatch({ type: 'ADD_PRODUCT', payload: newProduct }); 
     fetchProducts();
-    handleClose();
+    handleCloseForm();
   };
 
   useEffect(() => {
@@ -75,13 +95,10 @@ const App: FC = () => {
       <button onClick={handleOpenForm} style={{ marginBottom: '20px', padding: '10px 20px', backgroundColor: '#28a745', color: '#fff', border: 'none', borderRadius: '5px', cursor: 'pointer' }}>
         Добавить товар
       </button>
-      
+
       {isFormOpen && (
         <div style={{ marginBottom: '20px' }}>
-          <ProductForm onProductCreated={() => {
-            fetchProducts();
-            handleCloseForm();
-          }} onClose={handleCloseForm} />
+          <ProductForm onProductCreated={handleProductCreated} onClose={handleCloseForm} />
         </div>
       )}
 
@@ -101,7 +118,6 @@ const App: FC = () => {
       </div>
 
       {isCartOpen && <CartModal cartItems={cart} onClose={handleCloseCart} />}
-      {isModalOpen && <ProductForm onClose={handleClose} onProductCreated={handleProductCreated} />}
     </div>
   );
 };
