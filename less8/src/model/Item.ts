@@ -1,5 +1,5 @@
 type Item = {
-    id: number;
+    id?: number;
     image: string;
     title: string;
     cost: number;

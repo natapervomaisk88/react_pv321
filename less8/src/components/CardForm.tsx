@@ -10,16 +10,20 @@ const CardForm = (state: any): JSX.Element => {
 
     const handleAddCard = (e: any): void => {
         e.preventDefault();
-        const new_id = state.cards.length + 1;
         const newCard: Item = {
-            id: new_id,
-            image: ref_image.current?.value || "",
-            title: ref_title.current?.value || "",
-            cost: parseFloat(ref_cost.current?.value || "0"),
-            stock: parseInt(ref_stock.current?.value || "0"),
-            discount: parseInt(ref_discount.current?.value || "0")
+            id: undefined,
+            image: ref_image.current?.value,
+            title: ref_title.current?.value,
+            cost: parseFloat(ref_cost.current?.value),
+            stock: parseInt(ref_stock.current?.value),
+            discount: parseInt(ref_discount.current?.value)
         };
-        state.setCards([newCard, ...state.cards]);
+        fetch("http://localhost:3000/products", {method: "POST", body: JSON.stringify(newCard)})
+            .then(response => response.json())
+            .then(data => {
+                console.log("POST product");
+            });
+        state.setTrigger(!state.trigger);
     };
 
     return (
