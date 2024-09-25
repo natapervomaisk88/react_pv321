@@ -1,7 +1,8 @@
 import "./App.css";
+import NoteApp from "./components/NoteApp";
 
 function App() {
-  return <div>Hello world!</div>;
+  return <><NoteApp/></>;
 }
 
 export default App;
