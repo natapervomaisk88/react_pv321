@@ -1,43 +1,49 @@
-import { ProductCardComponent } from "./components/ProductCardComponent";
+import { useEffect, useState } from "react"
+import { FormComponent } from "./components/Form";
+import { CardComponent } from "./components/Card";
 
-const products = [
-  {
-    id: 1,
-    title: "Teapot1",
-    price: 30,
-    discount: 20,
-    imagePath: "https://www.rayware.co.uk/media/catalog/product/0/0/0059.098_1.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=500&width=600&canvas=600:500"
-  },
-  {
-    id: 2,
-    title: "Teapot2",
-    price: 30,
-    discount: 20,
-    imagePath: "https://www.rayware.co.uk/media/catalog/product/0/0/0059.098_1.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=500&width=600&canvas=600:500"
-  },
-  {
-    id: 3,
-    title: "Teapot3",
-    price: 30,
-    discount: null,
-    imagePath: "https://www.rayware.co.uk/media/catalog/product/0/0/0059.098_1.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=500&width=600&canvas=600:500"
-  },
-  {
-    id: 4,
-    title: "Teapot4",
-    price: 30,
-    discount: 20,
-    imagePath: "https://www.rayware.co.uk/media/catalog/product/0/0/0059.098_1.jpg?quality=80&bg-color=255,255,255&fit=bounds&height=500&width=600&canvas=600:500"
-  },
-];
+const baseUrl = 'http://localhost:3000';
+
+async function fetchProducts() {
+  const response = await fetch(baseUrl, { method: 'GET' });
+  const data = response.json();
+  return data;
+}
+
+async function postProduct(title, price) {
+  const response = await fetch(baseUrl, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',  
+    },
+    body: JSON.stringify({ title, price }),  
+  });
+  const data = await response.json();
+  return data;
+}
 
 function App() {
+  const [products, setProducts] = useState();
+
+  useEffect(() => {
+    (async () => {
+      setProducts(await fetchProducts());
+    })()
+  }, []);
+
+  const onSubmit = (title, price) => {
+    (async () => {
+      const insertedProduct = await postProduct(title, price)
+      setProducts(prev => [ ...prev, insertedProduct ]);
+    })()
+  }
 
   return (
-    <div style={{
-      display: 'flex',
-    }}>
-      {products.map(p => <ProductCardComponent key={p.id} product={p}/>)}
+    <div className="">
+      <FormComponent onSubmit={onSubmit}/>
+      <div className="">
+        {products && products?.map(product => <CardComponent title={product.title} price={product.price} key={product.id}/>)}
+      </div>
     </div>
   )
 }
